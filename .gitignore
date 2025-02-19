@@ -1,0 +1,28 @@
+# Ignore all node_modules and .env files in all subfolders
+**/node_modules
+**/.env*
+
+# Frontend-specific ignores
+frontend/.pnp
+frontend/.pnp.*
+frontend/.yarn/*
+!frontend/.yarn/patches
+!frontend/.yarn/plugins
+!frontend/.yarn/releases
+!frontend/.yarn/versions
+frontend/coverage
+frontend/.next
+frontend/out
+frontend/build
+frontend/.DS_Store
+frontend/*.pem
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.vercel
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+
+# Backend-specific ignores (if any)
+Backend/.DS_Store
+Backend/uploads/*
