@@ -20,7 +20,7 @@ export default function Header() {
         <div className="flex-col text-3xl">
           <div className="md:flex">
             <div className="flex gap-6">
-              {["Home", "Register", "Login"].map((item, index) => (
+              {["Home", "Register", "Login"].map((item) => (
                 <div key={item} className="hidden md:block">
                   <Link
                     href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
@@ -42,7 +42,6 @@ export default function Header() {
                     <Menu className="h-10 w-10 mt-1" />
                   )}
                 </motion.button>
-
                 <AnimatePresence>
                   {isMenuOpen && (
                     <motion.div

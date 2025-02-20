@@ -20,6 +20,10 @@ const Transaksjon = sequelize.define('Transaksjon', {
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
+  nySaldo: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  }
 });
 
 module.exports = Transaksjon;

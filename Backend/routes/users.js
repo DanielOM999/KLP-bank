@@ -27,6 +27,7 @@ router.post("/register", async (req, res) => {
           saldo: 1000.00,
           brukerId: newUser.id,
         });
+        
         res.json({ message: "User registered successfully", user: newUser });
       } catch (createErr) {
         res.status(500).json({ error: createErr.message });

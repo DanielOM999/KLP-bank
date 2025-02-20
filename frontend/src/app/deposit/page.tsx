@@ -1,11 +1,47 @@
 "use client";
 
-import { useState, FormEvent } from 'react';
+import { useRouter } from "next/navigation";
+import { useState, useEffect, FormEvent } from 'react';
 import { Input } from "@/src/components/ui/input"
 
+interface User {
+  id: number;
+  navn: string;
+}
+
 const Deposit: React.FC = () => {
+  const router = useRouter();
   const [kontonummer, setKontonummer] = useState<string>('');
   const [belop, setBelop] = useState<string>('');
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      const checkAuth = async () => {
+        try {
+          const res = await fetch("http://localhost:5000/api/current", {
+            credentials: "include",
+          });
+  
+          if (!res.ok) throw new Error("Unauthorized");
+  
+          const data = await res.json();
+          if (data.user) {
+            setUser({
+              id: data.user.id,
+              navn: data.user.navn,
+            });
+            setLoading(false);
+          } else {
+            router.push("/login");
+          }
+        } catch (error) {
+          router.push("/login");
+        }
+      };
+  
+      checkAuth();
+    }, [router]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -28,6 +64,10 @@ const Deposit: React.FC = () => {
       alert('Deposit error');
     }
   };
+
+  if (loading) {
+    return <div className="container mx-auto py-8">Loading...</div>;
+  }
 
   return (
     <div>
