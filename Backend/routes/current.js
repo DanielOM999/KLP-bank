@@ -9,7 +9,9 @@ router.get("/", async (req, res) => {
         include: [
           {
             model: Bankkonto,
-            attributes: ['id', 'kontonummer', 'saldo']
+            attributes: ['id', 'kontonummer', 'saldo', 'kontotype'],
+            separate: true,
+            order: [['createdAt', 'ASC']]
           }
         ]
       });

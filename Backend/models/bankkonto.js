@@ -17,6 +17,11 @@ const Bankkonto = sequelize.define('Bankkonto', {
     allowNull: false,
     defaultValue: 0.00,
   },
+  kontotype: {
+    type: DataTypes.ENUM('standard', 'sparekonto', 'bsu'),
+    allowNull: false,
+    defaultValue: 'standard',
+  },
 });
 
 module.exports = Bankkonto;

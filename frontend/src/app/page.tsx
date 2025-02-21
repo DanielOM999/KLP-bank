@@ -15,12 +15,14 @@ interface Bankkonto {
   id: number;
   kontonummer: string;
   saldo: number;
+  kontotype?: string;
 }
 
 export default function Home() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [newAccountType, setNewAccountType] = useState("standard");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -28,7 +30,6 @@ export default function Home() {
         const res = await fetch("http://localhost:5000/api/current", {
           credentials: "include",
         });
-
         if (!res.ok) throw new Error("Unauthorized");
 
         const data = await res.json();
@@ -53,22 +54,33 @@ export default function Home() {
   const handleCreateAccount = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/account/create", {
+        method: "POST",
         credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ kontotype: newAccountType }),
       });
 
-      if (!res.ok) throw new Error("Unauthorized");
-
       const data = await res.json();
-      console.log(data);
+      const updatedAccounts = [...(user?.bankkontos || []), data];
+      setUser(prev =>
+        prev
+          ? {
+              ...prev,
+              bankkontos: updatedAccounts,
+            }
+          : null
+      );
       setLoading(false);
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error("Account creation error:", error);
     }
   };
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/users/logout", {
+      await fetch("http://localhost:5000/api/users/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -97,13 +109,28 @@ export default function Home() {
               <h2 className="text-2xl font-semibold mb-4 mt-2">
                 Your Bank Accounts
               </h2>
-              <button
-                onClick={handleCreateAccount}
-                className="bg-green-500 hover:bg-green-700 rounded p-2 m-2 inline-flex"
-              >
-                <FaPlusCircle className="mr-1 mt-1" />
-                Create
-              </button>
+              <div className="flex flex-col">
+                <label htmlFor="accountType" className="mb-1">
+                  Select Account Type:
+                </label>
+                <select
+                  id="accountType"
+                  value={newAccountType}
+                  onChange={(e) => setNewAccountType(e.target.value)}
+                  className="mb-2 p-2 rounded bg-gray-700"
+                >
+                  <option value="standard">Standard</option>
+                  <option value="sparekonto">Sparekonto</option>
+                  <option value="bsu">BSU</option>
+                </select>
+                <button
+                  onClick={handleCreateAccount}
+                  className="bg-green-500 hover:bg-green-700 rounded p-2 m-2 inline-flex"
+                >
+                  <FaPlusCircle className="mr-1 mt-1" />
+                  Create
+                </button>
+              </div>
             </div>
             {user.bankkontos && user.bankkontos.length > 0 ? (
               <ul className="space-y-3">
@@ -113,12 +140,27 @@ export default function Home() {
                       <span className="font-medium">
                         Account Number: {account.kontonummer}
                       </span>
+                      <span className="font-medium ml-4">
+                        Type: {account.kontotype || "standard"}
+                      </span>
                       <span className="text-gray-400">
                         <Link
                           href={`/balance?kontonummer=${account.kontonummer}`}
                           className="px-4 py-2 bg-green-600 hover:bg-green-800 text-white rounded"
                         >
                           See balance
+                        </Link>
+                        <Link
+                          href={`/deposit?kontonummer=${account.kontonummer}`}
+                          className="px-4 py-2 bg-green-600 hover:bg-green-800 text-white rounded"
+                        >
+                          Deposit
+                        </Link>
+                        <Link
+                          href={`/withdraw?kontonummer=${account.kontonummer}`}
+                          className="px-4 py-2 bg-green-600 hover:bg-green-800 text-white rounded"
+                        >
+                          Withdraw
                         </Link>
                       </span>
                       <span className="text-gray-400">
