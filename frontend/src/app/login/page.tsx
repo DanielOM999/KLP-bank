@@ -43,7 +43,7 @@ export default function Login() {
         })
         setLoading(false)
       }
-    } catch (error) {
+    } catch {
       toast({
         variant: "destructive",
         title: "Error",
@@ -57,10 +57,10 @@ export default function Login() {
 
   return (
     <div className="flex mt-52 items-center justify-center">
-      <Card className="w-full max-w-md bg-white/45 text-black">
+      <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border border-gray-700">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle className="text-2xl text-white">Login</CardTitle>
+          <CardDescription className="text-gray-300">Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -71,7 +71,7 @@ export default function Login() {
                 type="text"
                 value={navn}
                 onChange={(e) => setNavn(e.target.value)}
-                className="text-white"
+                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
                 placeholder="Enter your username"
                 required
               />
@@ -83,18 +83,18 @@ export default function Login() {
                 type="password"
                 value={passord}
                 onChange={(e) => setPassord(e.target.value)}
-                className="text-white"
+                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
                 placeholder="Enter your password"
                 required
               />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-colors" disabled={loading}>
               {loading ? "Logging in..." : "Login"}
             </Button>
             <p className="text-sm text-center text-gray-400">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/register" className="text-primary hover:underline">
                 Register
               </Link>

@@ -61,7 +61,7 @@ export default function Home() {
         } else {
           router.push("/login");
         }
-      } catch (error) {
+      } catch {
         router.push("/login");
       }
     };
@@ -111,7 +111,7 @@ export default function Home() {
         credentials: "include",
       });
       router.push("/login");
-    } catch (error) {
+    } catch {
       toast({
         variant: "destructive",
         title: "Error",
@@ -125,20 +125,20 @@ export default function Home() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 mt-36">
+      <div className="flex items-center justify-between m-4">
         <h1 className="text-3xl font-bold">Welcome, {user?.navn}</h1>
-        <Button variant="destructive" onClick={handleLogout}>
+        <Button variant="destructive" className="bg-red-400 hover:bg-red-600" onClick={handleLogout}>
           Logout
         </Button>
       </div>
 
-      <Card>
+      <Card className="m-4 bg-gray-800/50 backdrop-blur-lg border border-gray-700">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Your Accounts</CardTitle>
-              <CardDescription>Manage your bank accounts</CardDescription>
+            <CardTitle className="text-white">Your Accounts</CardTitle>
+            <CardDescription className="text-gray-300">Manage your bank accounts</CardDescription>
             </div>
             <div className="flex items-center space-x-4">
               <Select value={newAccountType} onValueChange={setNewAccountType}>
@@ -162,17 +162,17 @@ export default function Home() {
           {user?.bankkontos && user.bankkontos.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {user.bankkontos.map((account) => (
-                <Card key={account.id}>
+                <Card key={account.id} className="bg-gray-800/30 border border-gray-700 text-white hover:bg-gray-800/50 transition-colors">
                   <CardHeader>
-                    <CardTitle className="text-lg">
+                    <CardTitle className="text-lg text-blue-400">
                       {account.kontotype || "Standard Account"}
                     </CardTitle>
-                    <CardDescription>{account.kontonummer}</CardDescription>
+                    <CardDescription className="text-gray-400">{account.kontonummer}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-400">Balance</span>
+                        <span className="text-sm text-gray-600">Balance</span>
                         <span className="text-lg font-semibold">
                           {isNaN(account.saldo)
                             ? "0.00"
@@ -181,28 +181,28 @@ export default function Home() {
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
-                        <Button asChild variant="secondary" className="w-full">
+                        <Button asChild variant="secondary" className="bg-blue-600/80 hover:bg-blue-900 border border-blue-500 text-white">
                           <Link
                             href={`/deposit?kontonummer=${account.kontonummer}`}
                           >
                             Deposit
                           </Link>
                         </Button>
-                        <Button asChild variant="secondary" className="w-full">
+                        <Button asChild variant="secondary" className="bg-green-600/80 hover:bg-green-900 border border-green-500 text-white">
                           <Link
                             href={`/withdraw?kontonummer=${account.kontonummer}`}
                           >
                             Withdraw
                           </Link>
                         </Button>
-                        <Button asChild variant="secondary" className="w-full">
+                        <Button asChild variant="secondary" className="bg-purple-600/80 hover:bg-purple-900 border border-purple-500 text-white">
                           <Link
                             href={`/balance?kontonummer=${account.kontonummer}`}
                           >
                             Balance
                           </Link>
                         </Button>
-                        <Button asChild variant="secondary" className="w-full">
+                        <Button asChild variant="secondary" className="bg-pink-600/80 hover:bg-pink-900 border border-pink-500 text-white">
                           <Link
                             href={`/transactions?kontonummer=${account.kontonummer}`}
                           >
@@ -236,7 +236,7 @@ function AccountsSkeleton() {
         <Skeleton className="h-9 w-[200px]" />
         <Skeleton className="h-10 w-[100px]" />
       </div>
-      <Card>
+      <Card className="bg-gray-800/30 border border-gray-700 text-white hover:bg-gray-800/50 transition-colors">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="space-y-2">
@@ -252,7 +252,7 @@ function AccountsSkeleton() {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <Card key={i}>
+              <Card key={i} className="bg-gray-800/30 border border-gray-700 text-white hover:bg-gray-800/50 transition-colors">
                 <CardHeader>
                   <Skeleton className="h-5 w-[140px]" />
                   <Skeleton className="h-4 w-[180px]" />

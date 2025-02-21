@@ -66,7 +66,7 @@ const Withdraw: React.FC = () => {
         } else {
           router.push("/login");
         }
-      } catch (error) {
+      } catch {
         router.push("/login");
       }
     };
@@ -133,64 +133,74 @@ const Withdraw: React.FC = () => {
 
   if (loading) {
     return (
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader>
-          <Skeleton className="h-8 w-[200px]" />
-          <Skeleton className="h-4 w-[300px]" />
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[100px]" />
+      <div className="flex mt-52 items-center justify-center">
+        <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
+          <CardHeader>
+            <Skeleton className="h-8 w-[200px]" />
+            <Skeleton className="h-4 w-[300px]" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[100px]" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[100px]" />
+              <Skeleton className="h-10 w-full" />
+            </div>
             <Skeleton className="h-10 w-full" />
-          </div>
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[100px]" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-          <Skeleton className="h-10 w-full" />
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>Withdraw Money</CardTitle>
-        <CardDescription>Withdraw funds from your account</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="kontonummer">Account Number</Label>
-            <Input
-              id="kontonummer"
-              type="text"
-              value={kontonummer}
-              onChange={(e) => setKontonummer(e.target.value)}
-              placeholder="Enter account number"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="belop">Amount</Label>
-            <Input
-              id="belop"
-              type="number"
-              value={belop}
-              onChange={(e) => setBelop(e.target.value)}
-              placeholder="Enter amount"
-              min="0"
-              step="0.01"
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Processing..." : "Withdraw"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <div className="flex mt-52 items-center justify-center">
+      <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
+        <CardHeader>
+          <CardTitle>Withdraw Money</CardTitle>
+          <CardDescription>Withdraw funds from your account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="kontonummer">Account Number</Label>
+              <Input
+                id="kontonummer"
+                type="text"
+                value={kontonummer}
+                onChange={(e) => setKontonummer(e.target.value)}
+                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                placeholder="Enter account number"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="belop">Amount</Label>
+              <Input
+                id="belop"
+                type="number"
+                value={belop}
+                onChange={(e) => setBelop(e.target.value)}
+                className="bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                placeholder="Enter amount"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-yellow-600/80 hover:bg-yellow-900 text-white transition-colors"
+              disabled={submitting}
+            >
+              {submitting ? "Processing..." : "Withdraw"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
