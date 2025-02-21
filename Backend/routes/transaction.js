@@ -99,7 +99,7 @@ router.post("/withdraw", async (req, res) => {
 router.get("/history/:kontonummer", async (req, res) => {
   try {
     if (!req.isAuthenticated()) {
-      return res.status(401).json({ error: "Not authenticated" });
+      return res.status(401).json({ message: "Not authenticated" });
     }
 
     const account = await Bankkonto.findOne({
@@ -128,7 +128,7 @@ router.get("/history/:kontonummer", async (req, res) => {
 router.get("/balance-history/:kontonummer", async (req, res) => {
   try {
     if (!req.isAuthenticated()) {
-      return res.status(401).json({ error: "Not authenticated" });
+      return res.status(401).json({ message: "Not authenticated" });
     }
 
     const transactions = await Transaksjon.findAll({

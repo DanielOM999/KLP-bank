@@ -1,8 +1,21 @@
 "use client";
 
-import { useState, FormEvent, useEffect } from "react";
-import { Input } from "@/src/components/ui/input";
+import type React from "react";
+
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
+import { Input } from "@/src/components/ui/input";
+import { Button } from "@/src/components/ui/button";
+import { Label } from "@/src/components/ui/label";
+import { useToast } from "@/src/components/ui/use-toast";
+import { Skeleton } from "@/src/components/ui/skeleton";
 
 interface User {
   id: number;
@@ -19,10 +32,12 @@ interface Bankkonto {
 const Withdraw: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [kontonummer, setKontonummer] = useState<string>("");
-  const [belop, setBelop] = useState<string>("");
+  const { toast } = useToast();
+  const [kontonummer, setKontonummer] = useState("");
+  const [belop, setBelop] = useState("");
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const kontonummer = searchParams.get("kontonummer");
@@ -59,15 +74,21 @@ const Withdraw: React.FC = () => {
     checkAuth();
   }, [router]);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
 
     const isOwnAccount = user?.bankkontos?.some(
       (acc) => acc.kontonummer === kontonummer
     );
 
     if (!isOwnAccount) {
-      alert("You can only withdraw from your own accounts");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "You can only withdraw from your own accounts",
+      });
+      setSubmitting(false);
       return;
     }
 
@@ -86,48 +107,90 @@ const Withdraw: React.FC = () => {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Withdrawal successful");
+        toast({
+          title: "Success",
+          description: "Withdrawal successful",
+        });
+        setBelop("");
       } else {
-        alert(data.error || "Withdrawal failed");
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: data.error || "Withdrawal failed",
+        });
       }
     } catch (error) {
-      alert("Withdrawal error");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Withdrawal failed",
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
   if (loading) {
-    return <div className="container mx-auto py-8">Loading...</div>;
+    return (
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader>
+          <Skeleton className="h-8 w-[200px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[100px]" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[100px]" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <Skeleton className="h-10 w-full" />
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
-    <div>
-      <h1>Withdraw Money</h1>
-      <form onSubmit={handleSubmit}>
-        <label>Bank Account ID:</label>
-        <br />
-        <Input
-          type="text"
-          value={kontonummer}
-          onChange={(e) => setKontonummer(e.target.value)}
-          className="w-100 bg-white rounded text-black text-xl placeholder:text-gray-600 placeholder:text-lg"
-          placeholder="Enter Bank Account ID"
-          required
-        />
-        <br />
-        <label>Amount:</label>
-        <br />
-        <Input
-          type="number"
-          value={belop}
-          onChange={(e) => setBelop(e.target.value)}
-          className="w-100 bg-white rounded text-black text-xl placeholder:text-gray-600 placeholder:text-lg"
-          placeholder="Enter Amount"
-          required
-        />
-        <br />
-        <button type="submit">Withdraw</button>
-      </form>
-    </div>
+    <Card className="w-full max-w-md mx-auto">
+      <CardHeader>
+        <CardTitle>Withdraw Money</CardTitle>
+        <CardDescription>Withdraw funds from your account</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="kontonummer">Account Number</Label>
+            <Input
+              id="kontonummer"
+              type="text"
+              value={kontonummer}
+              onChange={(e) => setKontonummer(e.target.value)}
+              placeholder="Enter account number"
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="belop">Amount</Label>
+            <Input
+              id="belop"
+              type="number"
+              value={belop}
+              onChange={(e) => setBelop(e.target.value)}
+              placeholder="Enter amount"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={submitting}>
+            {submitting ? "Processing..." : "Withdraw"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 

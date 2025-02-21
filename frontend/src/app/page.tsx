@@ -1,9 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
 import { FaPlusCircle } from "react-icons/fa";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/components/ui/select";
+import { Button } from "@/src/components/ui/button";
+import { Skeleton } from "@/src/components/ui/skeleton";
+import { useToast } from "@/src/components/ui/use-toast";
 
 interface User {
   id: number;
@@ -20,6 +37,7 @@ interface Bankkonto {
 
 export default function Home() {
   const router = useRouter();
+  const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [newAccountType, setNewAccountType] = useState("standard");
@@ -64,7 +82,7 @@ export default function Home() {
 
       const data = await res.json();
       const updatedAccounts = [...(user?.bankkontos || []), data];
-      setUser(prev =>
+      setUser((prev) =>
         prev
           ? {
               ...prev,
@@ -72,9 +90,17 @@ export default function Home() {
             }
           : null
       );
+      toast({
+        title: "Success",
+        description: "Account created successfully",
+      });
       setLoading(false);
     } catch (error) {
       console.error("Account creation error:", error);
+      toast({
+        title: "destructive",
+        description: "Failed to create account",
+      });
     }
   };
 
@@ -86,107 +112,170 @@ export default function Home() {
       });
       router.push("/login");
     } catch (error) {
-      console.error("Logout error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to logout",
+      });
     }
   };
 
   if (loading) {
-    return <div className="container mx-auto py-8">Loading...</div>;
+    return <AccountsSkeleton />;
   }
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold">Welcome to KLP Bank</h1>
-      <p className="mt-4">
-        Create a profile, deposit money, withdraw funds, and check your account
-        balance.
-      </p>
-      {user && (
-        <span className="ml-4 text-xl">
-          <p className="text-3xl mb-2">{`Welcome, ${user.navn}`}</p>
-          <div className="bg-black/25 p-6 rounded-lg shadow-md">
-            <div className="flex justify-between mx-4">
-              <h2 className="text-2xl font-semibold mb-4 mt-2">
-                Your Bank Accounts
-              </h2>
-              <div className="flex flex-col">
-                <label htmlFor="accountType" className="mb-1">
-                  Select Account Type:
-                </label>
-                <select
-                  id="accountType"
-                  value={newAccountType}
-                  onChange={(e) => setNewAccountType(e.target.value)}
-                  className="mb-2 p-2 rounded bg-gray-700"
-                >
-                  <option value="standard">Standard</option>
-                  <option value="sparekonto">Sparekonto</option>
-                  <option value="bsu">BSU</option>
-                </select>
-                <button
-                  onClick={handleCreateAccount}
-                  className="bg-green-500 hover:bg-green-700 rounded p-2 m-2 inline-flex"
-                >
-                  <FaPlusCircle className="mr-1 mt-1" />
-                  Create
-                </button>
-              </div>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Welcome, {user?.navn}</h1>
+        <Button variant="destructive" onClick={handleLogout}>
+          Logout
+        </Button>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Your Accounts</CardTitle>
+              <CardDescription>Manage your bank accounts</CardDescription>
             </div>
-            {user.bankkontos && user.bankkontos.length > 0 ? (
-              <ul className="space-y-3">
-                {user.bankkontos.map((account) => (
-                  <li key={account.id} className="p-3 border rounded-md">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">
-                        Account Number: {account.kontonummer}
-                      </span>
-                      <span className="font-medium ml-4">
-                        Type: {account.kontotype || "standard"}
-                      </span>
-                      <span className="text-gray-400">
-                        <Link
-                          href={`/balance?kontonummer=${account.kontonummer}`}
-                          className="px-4 py-2 bg-green-600 hover:bg-green-800 text-white rounded"
-                        >
-                          See balance
-                        </Link>
-                        <Link
-                          href={`/deposit?kontonummer=${account.kontonummer}`}
-                          className="px-4 py-2 bg-green-600 hover:bg-green-800 text-white rounded"
-                        >
-                          Deposit
-                        </Link>
-                        <Link
-                          href={`/withdraw?kontonummer=${account.kontonummer}`}
-                          className="px-4 py-2 bg-green-600 hover:bg-green-800 text-white rounded"
-                        >
-                          Withdraw
-                        </Link>
-                      </span>
-                      <span className="text-gray-400">
-                        <Link
-                          href={`/transactions?kontonummer=${account.kontonummer}`}
-                          className="ml-2 px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded"
-                        >
-                          View History
-                        </Link>
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-500">No bank accounts found</p>
-            )}
+            <div className="flex items-center space-x-4">
+              <Select value={newAccountType} onValueChange={setNewAccountType}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Account type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="standard">Standard</SelectItem>
+                  <SelectItem value="sparekonto">Savings</SelectItem>
+                  <SelectItem value="bsu">BSU</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button onClick={handleCreateAccount}>
+                <FaPlusCircle className="mr-2 h-4 w-4" />
+                Create Account
+              </Button>
+            </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="mt-4 px-4 py-2 bg-red-500 hover:bg-red-800 text-white rounded"
-          >
-            Logout
-          </button>
-        </span>
-      )}
+        </CardHeader>
+        <CardContent>
+          {user?.bankkontos && user.bankkontos.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {user.bankkontos.map((account) => (
+                <Card key={account.id}>
+                  <CardHeader>
+                    <CardTitle className="text-lg">
+                      {account.kontotype || "Standard Account"}
+                    </CardTitle>
+                    <CardDescription>{account.kontonummer}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">Balance</span>
+                        <span className="text-lg font-semibold">
+                          {isNaN(account.saldo)
+                            ? "0.00"
+                            : Number(account.saldo).toFixed(2)}{" "}
+                          kr
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button asChild variant="secondary" className="w-full">
+                          <Link
+                            href={`/deposit?kontonummer=${account.kontonummer}`}
+                          >
+                            Deposit
+                          </Link>
+                        </Button>
+                        <Button asChild variant="secondary" className="w-full">
+                          <Link
+                            href={`/withdraw?kontonummer=${account.kontonummer}`}
+                          >
+                            Withdraw
+                          </Link>
+                        </Button>
+                        <Button asChild variant="secondary" className="w-full">
+                          <Link
+                            href={`/balance?kontonummer=${account.kontonummer}`}
+                          >
+                            Balance
+                          </Link>
+                        </Button>
+                        <Button asChild variant="secondary" className="w-full">
+                          <Link
+                            href={`/transactions?kontonummer=${account.kontonummer}`}
+                          >
+                            History
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-400">No bank accounts found</p>
+              <p className="text-sm text-gray-500 mt-2">
+                Create your first account to get started
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function AccountsSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-9 w-[200px]" />
+        <Skeleton className="h-10 w-[100px]" />
+      </div>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-[140px]" />
+              <Skeleton className="h-4 w-[200px]" />
+            </div>
+            <div className="flex items-center space-x-4">
+              <Skeleton className="h-10 w-[180px]" />
+              <Skeleton className="h-10 w-[140px]" />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <Card key={i}>
+                <CardHeader>
+                  <Skeleton className="h-5 w-[140px]" />
+                  <Skeleton className="h-4 w-[180px]" />
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Skeleton className="h-4 w-[60px]" />
+                      <Skeleton className="h-6 w-[100px]" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Skeleton className="h-10" />
+                      <Skeleton className="h-10" />
+                      <Skeleton className="h-10" />
+                      <Skeleton className="h-10" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

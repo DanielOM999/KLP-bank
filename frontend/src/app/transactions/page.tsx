@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Transaction {
   id: string;
@@ -32,6 +32,8 @@ export default function TransactionHistory() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balanceHistory, setBalanceHistory] = useState<{ date: string; balance: number }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [noData, setNoData] = useState(false);
+  const router = useRouter();
   const searchParams = useSearchParams();
   const kontonummer = searchParams.get('kontonummer');
 
@@ -46,30 +48,60 @@ export default function TransactionHistory() {
             credentials: 'include'
           })
         ]);
-
-        const txData = (await txRes.json() as RawTransaction[]).map((tx: RawTransaction) => ({
+  
+        if (txRes.status === 401 || historyRes.status === 401) {
+          router.push('/login');
+          return;
+        }
+  
+        const txJson = await txRes.json();
+        const historyJson = await historyRes.json();
+  
+        if (!Array.isArray(txJson)) {
+          console.error("Transaction history error:", txJson.error);
+          setLoading(false);
+          return;
+        }
+  
+        if (!Array.isArray(historyJson)) {
+          console.error("Balance history error:", historyJson.error);
+          setLoading(false);
+          return;
+        }
+  
+        const txData = txJson.map((tx: RawTransaction) => ({
           ...tx,
           belop: Number(tx.belop),
           nySaldo: Number(tx.nySaldo)
         }));
-        
-        const historyData = (await historyRes.json() as RawBalanceHistoryItem[]).map((item: RawBalanceHistoryItem) => ({
+  
+        const historyData = historyJson.map((item: RawBalanceHistoryItem) => ({
           date: item.date,
           balance: Number(item.balance)
         }));
+  
+        if (txData.length === 0 || historyData.length === 0) {
+          setNoData(true);
+          setLoading(false);
+          return;
+        }
         
         setTransactions(txData);
         setBalanceHistory(historyData);
+        setNoData(false);
         setLoading(false);
       } catch (error) {
         console.error('Fetch error:', error);
+        router.push('/login');
       }
     };
-
+  
     if (kontonummer) fetchData();
-  }, [kontonummer]);
+  }, [kontonummer, router]);  
 
   if (loading) return <div>Loading history...</div>;
+
+  if (noData) return <div>No transaction history found.</div>
 
   return (
     <div className="container mx-auto py-8">
