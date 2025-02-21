@@ -2,6 +2,7 @@
 
 import type React from "react";
 
+import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -29,14 +30,22 @@ interface Bankkonto {
   saldo: number;
 }
 
-const Withdraw: React.FC = () => {
+export default function WithdrawPage() {
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <WithdrawContent />
+    </Suspense>
+  );
+}
+
+function WithdrawContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [kontonummer, setKontonummer] = useState("");
   const [belop, setBelop] = useState("");
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -62,7 +71,7 @@ const Withdraw: React.FC = () => {
             navn: data.user.navn,
             bankkontos: data.user.Bankkontos,
           });
-          setLoading(false);
+          // setLoading(false);
         } else {
           router.push("/login");
         }
@@ -131,30 +140,6 @@ const Withdraw: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex mt-52 items-center justify-center">
-        <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
-          <CardHeader>
-            <Skeleton className="h-8 w-[200px]" />
-            <Skeleton className="h-4 w-[300px]" />
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <Skeleton className="h-10 w-full" />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="flex mt-52 items-center justify-center">
       <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
@@ -204,4 +189,26 @@ const Withdraw: React.FC = () => {
   );
 };
 
-export default Withdraw;
+function LoadingSkeleton() {
+  return (
+    <div className="flex mt-52 items-center justify-center">
+      <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
+        <CardHeader>
+          <Skeleton className="h-8 w-[200px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[100px]" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[100px]" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <Skeleton className="h-10 w-full" />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

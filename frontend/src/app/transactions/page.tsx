@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
@@ -47,12 +48,20 @@ interface RawBalanceHistoryItem {
   balance: string;
 }
 
-export default function TransactionHistory() {
+export default function TransactionHistoryPage() {
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <TransactionHistoryContent />
+    </Suspense>
+  );
+}
+
+function TransactionHistoryContent() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balanceHistory, setBalanceHistory] = useState<
     { date: string; balance: number }[]
   >([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [noData, setNoData] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -87,13 +96,13 @@ export default function TransactionHistory() {
 
         if (!Array.isArray(txJson)) {
           console.error("Transaction history error:", txJson.error);
-          setLoading(false);
+          // setLoading(false);
           return;
         }
 
         if (!Array.isArray(historyJson)) {
           console.error("Balance history error:", historyJson.error);
-          setLoading(false);
+          // setLoading(false);
           return;
         }
 
@@ -126,40 +135,12 @@ export default function TransactionHistory() {
           router.push("/login");
         }
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
     if (kontonummer) fetchData();
   }, [kontonummer, router, toast]);
-
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <Card className="bg-gray-800/50 border border-gray-700">
-          <CardHeader>
-            <Skeleton className="h-8 w-[300px]" />
-            <Skeleton className="h-4 w-[200px]" />
-          </CardHeader>
-          <CardContent>
-            <Skeleton className="h-[300px] w-full" />
-          </CardContent>
-        </Card>
-        <Card className="bg-gray-800/50 border border-gray-700">
-          <CardHeader>
-            <Skeleton className="h-6 w-[200px]" />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   if (noData) {
     return (
@@ -231,7 +212,7 @@ export default function TransactionHistory() {
                 <Line
                   type="monotone"
                   dataKey="balance"
-                  stroke="#22c55e" // Emerald green
+                  stroke="#22c55e"
                   strokeWidth={2.5}
                   dot={false}
                   activeDot={{
@@ -295,6 +276,34 @@ export default function TransactionHistory() {
               ))}
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-6">
+      <Card className="bg-gray-800/50 border border-gray-700">
+        <CardHeader>
+          <Skeleton className="h-8 w-[300px]" />
+          <Skeleton className="h-4 w-[200px]" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[300px] w-full" />
+        </CardContent>
+      </Card>
+      <Card className="bg-gray-800/50 border border-gray-700">
+        <CardHeader>
+          <Skeleton className="h-6 w-[200px]" />
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-12 w-full" />
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>

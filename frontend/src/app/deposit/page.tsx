@@ -2,6 +2,7 @@
 
 import type React from "react";
 
+import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -22,14 +23,21 @@ interface User {
   navn: string;
 }
 
-const Deposit: React.FC = () => {
+export default function DepositPage() {
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <DepositContent />
+    </Suspense>
+  );
+}
+
+function DepositContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [kontonummer, setKontonummer] = useState("");
   const [belop, setBelop] = useState("");
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -54,7 +62,6 @@ const Deposit: React.FC = () => {
             id: data.user.id,
             navn: data.user.navn,
           });
-          setLoading(false);
         } else {
           router.push("/login");
         }
@@ -103,30 +110,6 @@ const Deposit: React.FC = () => {
       setSubmitting(false);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="flex mt-52 items-center justify-center">
-        <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
-          <CardHeader>
-            <Skeleton className="h-8 w-[200px]" />
-            <Skeleton className="h-4 w-[300px]" />
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <Skeleton className="h-10 w-full" />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="flex mt-52 items-center justify-center">
@@ -179,4 +162,26 @@ const Deposit: React.FC = () => {
   );
 };
 
-export default Deposit;
+function LoadingSkeleton() {
+  return (
+    <div className="flex mt-52 items-center justify-center">
+      <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
+        <CardHeader>
+          <Skeleton className="h-8 w-[200px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[100px]" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[100px]" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <Skeleton className="h-10 w-full" />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

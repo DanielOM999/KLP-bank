@@ -2,6 +2,7 @@
 
 import type React from "react";
 
+import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -22,14 +23,22 @@ interface User {
   navn: string;
 }
 
-const Balance: React.FC = () => {
+export default function BalancePage() {
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <BalanceContent />
+    </Suspense>
+  );
+}
+
+function BalanceContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [bankkontoId, setBankkontoId] = useState("");
   const [balance, setBalance] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [checking, setChecking] = useState(false);
 
   useEffect(() => {
@@ -54,7 +63,7 @@ const Balance: React.FC = () => {
             id: data.user.id,
             navn: data.user.navn,
           });
-          setLoading(false);
+          // setLoading(false);
         } else {
           router.push("/login");
         }
@@ -104,26 +113,6 @@ const Balance: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex mt-52 items-center justify-center">
-        <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
-          <CardHeader>
-            <Skeleton className="h-8 w-[200px]" />
-            <Skeleton className="h-4 w-[300px]" />
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <Skeleton className="h-10 w-full" />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="flex mt-52 items-center justify-center">
       <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
@@ -172,4 +161,22 @@ const Balance: React.FC = () => {
   );
 };
 
-export default Balance;
+function LoadingSkeleton() {
+  return (
+    <div className="flex mt-52 items-center justify-center">
+      <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
+        <CardHeader>
+          <Skeleton className="h-8 w-[200px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[100px]" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <Skeleton className="h-10 w-full" />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
