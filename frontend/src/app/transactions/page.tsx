@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
+import { IoArrowBackOutline } from "react-icons/io5";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -139,7 +141,13 @@ function TransactionHistoryContent() {
 
   if (noData) {
     return (
-      <Card className="bg-gray-800/50 border border-gray-700">
+      <Card className="bg-gray-800/50 border border-gray-700 mt-36">
+        <Link 
+        href="/" 
+        className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
+      >
+        <IoArrowBackOutline className="text-white text-2xl" />
+      </Link>
         <CardHeader>
           <CardTitle>No Transaction History</CardTitle>
           <CardDescription>
@@ -151,7 +159,13 @@ function TransactionHistoryContent() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-36">
+      <Link 
+        href="/" 
+        className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
+      >
+        <IoArrowBackOutline className="text-white text-2xl" />
+      </Link>
       <Card className="bg-gray-800/50 border border-gray-700">
         <CardHeader>
           <CardTitle className="text-white">Balance History</CardTitle>
@@ -280,7 +294,13 @@ function TransactionHistoryContent() {
 function LoadingSkeleton() {
   return (
     <div className="space-y-6">
-      <Card className="bg-gray-800/50 border border-gray-700">
+      <Link 
+        href="/" 
+        className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
+      >
+        <IoArrowBackOutline className="text-white text-2xl" />
+      </Link>
+      <Card className="bg-gray-800/50 mt-36 border border-gray-700">
         <CardHeader>
           <Skeleton className="h-8 w-[300px]" />
           <Skeleton className="h-4 w-[200px]" />

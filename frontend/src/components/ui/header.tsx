@@ -13,46 +13,64 @@ export default function Header() {
   return (
     <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-top/25 backdrop-blur-md">
       <nav className="flex flex-row justify-between mx-10 my-4">
-        <div className="flex items-center text-3xl">
-          <RiBankLine className="mr-1 rotate-[-10deg] text-5xl" />
-          <h1>KLP-Bank Service</h1>
-        </div>
+        <Link
+          href="/"
+          className="group flex items-center gap-3 text-2xl font-semibold"
+        >
+          <motion.div
+            whileHover={{ rotate: [-10, 10, -10] }}
+            transition={{ duration: 0.5 }}
+          >
+            <RiBankLine className="h-10 w-10 rotate-[-10deg] text-white transition-transform group-hover:scale-110" />
+          </motion.div>
+          <span className="text-white text-3xl">
+            KLP Bank
+          </span>
+        </Link>
         <div className="flex-col text-3xl">
-          <div className="md:flex">
+          <div className="lg:flex">
             <div className="flex gap-6">
-              {["Home", "Register", "Login"].map((item) => (
-                <div key={item} className="hidden md:block">
+              <div className="hidden items-center gap-8 lg:flex">
+                {["Home", "Register", "Login"].map((item) => (
                   <Link
+                    key={item}
                     href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                    className="transition-colors text-2xl"
+                    className="relative text-lg font-medium text-gray-300 transition-all hover:text-emerald-400"
                   >
                     {item}
+                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-emerald-400 transition-all duration-300 hover:w-full" />
                   </Link>
-                </div>
-              ))}
+                ))}
+              </div>
               <div>
                 <motion.button
-                  className="text-white"
+                  className="p-2 rounded-lg hover:bg-gray-700/30 transition-colors"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                   whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.05 }}
                 >
                   {isMenuOpen ? (
-                    <X className="h-10 w-10 mt-1" />
+                    <X className="h-8 w-8 text-gray-200" />
                   ) : (
-                    <Menu className="h-10 w-10 mt-1" />
+                    <Menu className="h-8 w-8 text-gray-200" />
                   )}
                 </motion.button>
+
                 <AnimatePresence>
                   {isMenuOpen && (
                     <motion.div
-                      className="absolute right-0 top-full mt-2 w-36 rounded-md bg-primary/30 p-4 shadow-lg backdrop-blur-md"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
+                      className="absolute right-0 top-full mt-3 w-48 rounded-xl bg-gray-800/95 border border-gray-700 shadow-2xl backdrop-blur-xl"
+                      initial={{ opacity: 0, y: -15, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -15, scale: 0.95 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 20,
+                      }}
                       ref={menuRef}
                     >
-                      <div className="flex flex-col gap-4 text-center text-2xl">
+                      <div className="flex flex-col gap-3 p-3">
                         {[
                           "Home",
                           "Register",
@@ -60,18 +78,27 @@ export default function Header() {
                           "Deposit",
                           "Withdraw",
                           "Balance",
-                        ].map((item) => (
-                          <div key={item}>
+                        ].map((item, index) => (
+                          <motion.div
+                            key={item}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 20 }}
+                            transition={{ delay: index * 0.05 }}
+                          >
                             <Link
                               href={
                                 item === "Home" ? "/" : `/${item.toLowerCase()}`
                               }
-                              className="transition-colors hover:text-secondary"
+                              className="flex items-center px-4 py-3 rounded-lg text-gray-200 hover:bg-gray-700/50 hover:text-emerald-400 transition-colors text-lg font-medium"
                               onClick={() => setIsMenuOpen(false)}
                             >
                               {item}
                             </Link>
-                          </div>
+                            {index < 5 && (
+                              <div className="mx-4 my-1 h-px bg-gray-700/50" />
+                            )}
+                          </motion.div>
                         ))}
                       </div>
                     </motion.div>

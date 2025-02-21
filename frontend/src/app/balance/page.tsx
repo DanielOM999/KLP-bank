@@ -5,6 +5,8 @@ import type React from "react";
 import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { IoArrowBackOutline } from "react-icons/io5";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -113,6 +115,12 @@ function BalanceContent() {
 
   return (
     <div className="flex mt-52 items-center justify-center">
+      <Link 
+        href="/" 
+        className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
+      >
+        <IoArrowBackOutline className="text-white text-2xl" />
+      </Link>
       <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
         <CardHeader>
           <CardTitle>Check Balance</CardTitle>
@@ -162,6 +170,12 @@ function BalanceContent() {
 function LoadingSkeleton() {
   return (
     <div className="flex mt-52 items-center justify-center">
+      <Link 
+        href="/" 
+        className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
+      >
+        <IoArrowBackOutline className="text-white text-2xl" />
+      </Link>
       <Card className="bg-gray-800/50 w-full max-w-md mx-auto border border-gray-700">
         <CardHeader>
           <Skeleton className="h-8 w-[200px]" />
