@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { FaPlusCircle } from "react-icons/fa";
 
 interface User {
   id: number;
@@ -49,6 +50,22 @@ export default function Home() {
     checkAuth();
   }, [router]);
 
+  const handleCreateAccount = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/account/create", {
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Unauthorized");
+
+      const data = await res.json();
+      console.log(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   const handleLogout = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/users/logout", {
@@ -76,7 +93,18 @@ export default function Home() {
         <span className="ml-4 text-xl">
           <p className="text-3xl mb-2">{`Welcome, ${user.navn}`}</p>
           <div className="bg-black/25 p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">Your Bank Accounts</h2>
+            <div className="flex justify-between mx-4">
+              <h2 className="text-2xl font-semibold mb-4 mt-2">
+                Your Bank Accounts
+              </h2>
+              <button
+                onClick={handleCreateAccount}
+                className="bg-green-500 hover:bg-green-700 rounded p-2 m-2 inline-flex"
+              >
+                <FaPlusCircle className="mr-1 mt-1" />
+                Create
+              </button>
+            </div>
             {user.bankkontos && user.bankkontos.length > 0 ? (
               <ul className="space-y-3">
                 {user.bankkontos.map((account) => (
