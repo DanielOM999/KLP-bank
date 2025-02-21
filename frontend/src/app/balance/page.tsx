@@ -38,7 +38,6 @@ function BalanceContent() {
   const [bankkontoId, setBankkontoId] = useState("");
   const [balance, setBalance] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  // const [loading, setLoading] = useState(true);
   const [checking, setChecking] = useState(false);
 
   useEffect(() => {
@@ -63,7 +62,6 @@ function BalanceContent() {
             id: data.user.id,
             navn: data.user.navn,
           });
-          // setLoading(false);
         } else {
           router.push("/login");
         }

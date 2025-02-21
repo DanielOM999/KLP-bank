@@ -45,7 +45,6 @@ function WithdrawContent() {
   const [kontonummer, setKontonummer] = useState("");
   const [belop, setBelop] = useState("");
   const [user, setUser] = useState<User | null>(null);
-  // const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -71,7 +70,6 @@ function WithdrawContent() {
             navn: data.user.navn,
             bankkontos: data.user.Bankkontos,
           });
-          // setLoading(false);
         } else {
           router.push("/login");
         }
@@ -117,7 +115,7 @@ function WithdrawContent() {
       const data = await res.json();
       if (res.ok) {
         toast({
-          title: "Success",
+          title: "success",
           description: "Withdrawal successful",
         });
         setBelop("");

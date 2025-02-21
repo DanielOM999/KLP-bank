@@ -151,7 +151,7 @@ export default function Home() {
                   <SelectItem value="bsu">BSU</SelectItem>
                 </SelectContent>
               </Select>
-              <Button onClick={handleCreateAccount}>
+              <Button onClick={handleCreateAccount} className="hover:bg-gray-600/25">
                 <FaPlusCircle className="mr-2 h-4 w-4" />
                 Create Account
               </Button>

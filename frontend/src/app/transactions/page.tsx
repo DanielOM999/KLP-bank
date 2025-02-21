@@ -61,7 +61,6 @@ function TransactionHistoryContent() {
   const [balanceHistory, setBalanceHistory] = useState<
     { date: string; balance: number }[]
   >([]);
-  // const [loading, setLoading] = useState(true);
   const [noData, setNoData] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -96,13 +95,11 @@ function TransactionHistoryContent() {
 
         if (!Array.isArray(txJson)) {
           console.error("Transaction history error:", txJson.error);
-          // setLoading(false);
           return;
         }
 
         if (!Array.isArray(historyJson)) {
           console.error("Balance history error:", historyJson.error);
-          // setLoading(false);
           return;
         }
 
@@ -134,8 +131,6 @@ function TransactionHistoryContent() {
         if (error instanceof Error && error.message === "Unauthorized") {
           router.push("/login");
         }
-      } finally {
-        // setLoading(false);
       }
     };
 
