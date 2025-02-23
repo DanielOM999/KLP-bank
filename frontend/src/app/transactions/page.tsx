@@ -1,11 +1,19 @@
 "use client";
-
+// Imports Suspense for lazy loading fallback and hooks for state, effect, and navigation.
 import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+// Imports chart components from 'recharts' for rendering the balance history.
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
+
+// Imports the back arrow icon from react-icons.
 import { IoArrowBackOutline } from "react-icons/io5";
+
+// Imports Next.js Link for navigation.
 import Link from "next/link";
+
+// Imports UI components for Card layout.
 import {
   Card,
   CardContent,
@@ -13,8 +21,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
+
+// Imports the custom toast hook for notifications.
 import { useToast } from "@/src/components/ui/use-toast";
+
+// Imports the Skeleton component for loading state.
 import { Skeleton } from "@/src/components/ui/skeleton";
+
+// Imports table components for displaying recent transactions.
 import {
   Table,
   TableBody,
@@ -23,9 +37,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
+
+// Imports custom chart components for containing the chart and displaying tooltips.
 import { ChartContainer, ChartTooltip } from "@/src/components/ui/chart";
+
+// Imports the date formatting function.
 import { format } from "date-fns";
 
+// Defines interfaces for transaction data and raw API responses.
 interface Transaction {
   id: string;
   type: string;
@@ -50,6 +69,7 @@ interface RawBalanceHistoryItem {
   balance: string;
 }
 
+// Exports the TransactionHistoryPage component wrapped in a Suspense fallback.
 export default function TransactionHistoryPage() {
   return (
     <Suspense fallback={<LoadingSkeleton />}>
@@ -58,6 +78,8 @@ export default function TransactionHistoryPage() {
   );
 }
 
+// Defines the main content for displaying transaction history and balance history.
+// Fetches transaction and balance history data from the API and displays them in a chart and table.
 function TransactionHistoryContent() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balanceHistory, setBalanceHistory] = useState<
@@ -69,6 +91,8 @@ function TransactionHistoryContent() {
   const { toast } = useToast();
   const kontonummer = searchParams.get("kontonummer");
 
+  // Fetches both transaction and balance history data from the API.
+  // Maps raw string data to the appropriate number types and sets state accordingly.
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -139,15 +163,16 @@ function TransactionHistoryContent() {
     if (kontonummer) fetchData();
   }, [kontonummer, router, toast]);
 
+  // If no data is found, renders a Card informing the user.
   if (noData) {
     return (
       <Card className="bg-gray-800/50 border border-gray-700 mt-36">
-        <Link 
-        href="/" 
-        className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
-      >
-        <IoArrowBackOutline className="text-white text-2xl" />
-      </Link>
+        <Link
+          href="/"
+          className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
+        >
+          <IoArrowBackOutline className="text-white text-2xl" />
+        </Link>
         <CardHeader>
           <CardTitle>No Transaction History</CardTitle>
           <CardDescription>
@@ -158,10 +183,11 @@ function TransactionHistoryContent() {
     );
   }
 
+  // Renders the balance history chart and recent transactions table.
   return (
     <div className="space-y-6 mt-36">
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
       >
         <IoArrowBackOutline className="text-white text-2xl" />
@@ -291,11 +317,12 @@ function TransactionHistoryContent() {
   );
 }
 
+// Defines a loading skeleton to display while transaction history data is being fetched.
 function LoadingSkeleton() {
   return (
     <div className="space-y-6">
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
       >
         <IoArrowBackOutline className="text-white text-2xl" />

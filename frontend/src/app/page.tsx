@@ -1,9 +1,14 @@
 "use client";
 
+// Imports hooks for state management and side effects, along with Next.js Link and router.
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+// Imports the plus-circle icon for the create account button.
 import { FaPlusCircle } from "react-icons/fa";
+
+// Imports UI components for Card layout and select input components.
 import {
   Card,
   CardContent,
@@ -20,8 +25,11 @@ import {
 } from "@/src/components/ui/select";
 import { Button } from "@/src/components/ui/button";
 import { Skeleton } from "@/src/components/ui/skeleton";
+
+// Imports the custom toast hook to display notifications.
 import { useToast } from "@/src/components/ui/use-toast";
 
+// Defines interfaces for User and Bankkonto data.
 interface User {
   id: number;
   navn: string;
@@ -35,6 +43,8 @@ interface Bankkonto {
   kontotype?: string;
 }
 
+// Exports the Home component which serves as the main dashboard.
+// It displays a welcome message, allows account creation, and lists the user's bank accounts.
 export default function Home() {
   const router = useRouter();
   const { toast } = useToast();
@@ -42,6 +52,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [newAccountType, setNewAccountType] = useState("standard");
 
+  // Checks authentication by fetching the current user data.
+  // If authenticated, sets the user state; otherwise, redirects to login.
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -69,6 +81,8 @@ export default function Home() {
     checkAuth();
   }, [router]);
 
+  // Handles creating a new bank account by sending a POST request.
+  // On success, updates the user's bank accounts and shows a success toast.
   const handleCreateAccount = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/account/create", {
@@ -104,6 +118,7 @@ export default function Home() {
     }
   };
 
+  // Handles logging out the user by calling the logout API and redirecting to login.
   const handleLogout = async () => {
     try {
       await fetch("http://localhost:5000/api/users/logout", {
@@ -120,15 +135,22 @@ export default function Home() {
     }
   };
 
+  // If the user data is still loading, render a skeleton component.
   if (loading) {
     return <AccountsSkeleton />;
   }
 
+  // Renders the main dashboard with a welcome message, account creation controls,
+  // and a list of the user's bank accounts with actions to deposit, withdraw, view balance, or history.
   return (
     <div className="space-y-6 mt-36">
       <div className="flex items-center justify-between m-4">
         <h1 className="text-3xl font-bold">Welcome, {user?.navn}</h1>
-        <Button variant="destructive" className="bg-red-400 hover:bg-red-600" onClick={handleLogout}>
+        <Button
+          variant="destructive"
+          className="bg-red-400 hover:bg-red-600"
+          onClick={handleLogout}
+        >
           Logout
         </Button>
       </div>
@@ -137,8 +159,10 @@ export default function Home() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-            <CardTitle className="text-white">Your Accounts</CardTitle>
-            <CardDescription className="text-gray-300">Manage your bank accounts</CardDescription>
+              <CardTitle className="text-white">Your Accounts</CardTitle>
+              <CardDescription className="text-gray-300">
+                Manage your bank accounts
+              </CardDescription>
             </div>
             <div className="flex items-center space-x-4">
               <Select value={newAccountType} onValueChange={setNewAccountType}>
@@ -151,7 +175,10 @@ export default function Home() {
                   <SelectItem value="bsu">BSU</SelectItem>
                 </SelectContent>
               </Select>
-              <Button onClick={handleCreateAccount} className="hover:bg-gray-600/25">
+              <Button
+                onClick={handleCreateAccount}
+                className="hover:bg-gray-600/25"
+              >
                 <FaPlusCircle className="mr-2 h-4 w-4" />
                 Create Account
               </Button>
@@ -162,12 +189,17 @@ export default function Home() {
           {user?.bankkontos && user.bankkontos.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {user.bankkontos.map((account) => (
-                <Card key={account.id} className="bg-gray-800/30 border border-gray-700 text-white hover:bg-gray-800/50 transition-colors">
+                <Card
+                  key={account.id}
+                  className="bg-gray-800/30 border border-gray-700 text-white hover:bg-gray-800/50 transition-colors"
+                >
                   <CardHeader>
                     <CardTitle className="text-lg text-blue-400">
                       {account.kontotype || "Standard Account"}
                     </CardTitle>
-                    <CardDescription className="text-gray-400">{account.kontonummer}</CardDescription>
+                    <CardDescription className="text-gray-400">
+                      {account.kontonummer}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -181,28 +213,44 @@ export default function Home() {
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
-                        <Button asChild variant="secondary" className="bg-blue-600/80 hover:bg-blue-900 border border-blue-500 text-white">
+                        <Button
+                          asChild
+                          variant="secondary"
+                          className="bg-blue-600/80 hover:bg-blue-900 border border-blue-500 text-white"
+                        >
                           <Link
                             href={`/deposit?kontonummer=${account.kontonummer}`}
                           >
                             Deposit
                           </Link>
                         </Button>
-                        <Button asChild variant="secondary" className="bg-green-600/80 hover:bg-green-900 border border-green-500 text-white">
+                        <Button
+                          asChild
+                          variant="secondary"
+                          className="bg-green-600/80 hover:bg-green-900 border border-green-500 text-white"
+                        >
                           <Link
                             href={`/withdraw?kontonummer=${account.kontonummer}`}
                           >
                             Withdraw
                           </Link>
                         </Button>
-                        <Button asChild variant="secondary" className="bg-purple-600/80 hover:bg-purple-900 border border-purple-500 text-white">
+                        <Button
+                          asChild
+                          variant="secondary"
+                          className="bg-purple-600/80 hover:bg-purple-900 border border-purple-500 text-white"
+                        >
                           <Link
                             href={`/balance?kontonummer=${account.kontonummer}`}
                           >
                             Balance
                           </Link>
                         </Button>
-                        <Button asChild variant="secondary" className="bg-pink-600/80 hover:bg-pink-900 border border-pink-500 text-white">
+                        <Button
+                          asChild
+                          variant="secondary"
+                          className="bg-pink-600/80 hover:bg-pink-900 border border-pink-500 text-white"
+                        >
                           <Link
                             href={`/transactions?kontonummer=${account.kontonummer}`}
                           >
@@ -229,6 +277,7 @@ export default function Home() {
   );
 }
 
+// Defines a skeleton component to display while account data is loading.
 function AccountsSkeleton() {
   return (
     <div className="space-y-6">
@@ -252,7 +301,10 @@ function AccountsSkeleton() {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="bg-gray-800/30 border border-gray-700 text-white hover:bg-gray-800/50 transition-colors">
+              <Card
+                key={i}
+                className="bg-gray-800/30 border border-gray-700 text-white hover:bg-gray-800/50 transition-colors"
+              >
                 <CardHeader>
                   <Skeleton className="h-5 w-[140px]" />
                   <Skeleton className="h-4 w-[180px]" />

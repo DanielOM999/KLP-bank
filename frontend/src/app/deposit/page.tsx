@@ -1,12 +1,18 @@
 "use client";
 
+// Imports type definitions from React for component props.
 import type React from "react";
 
+// Imports Suspense for lazy loading, state/effect hooks, and Next.js navigation hooks.
 import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+// Imports the back arrow icon from react-icons and Next.js Link for navigation
 import { IoArrowBackOutline } from "react-icons/io5";
 import Link from "next/link";
+
+// Imports UI components for Card layout, form inputs, buttons, and labels.
 import {
   Card,
   CardContent,
@@ -17,14 +23,18 @@ import {
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
 import { Label } from "@/src/components/ui/label";
+
+// Imports the custom toast hook for notifications and a Skeleton component for fallback.
 import { useToast } from "@/src/components/ui/use-toast";
 import { Skeleton } from "@/src/components/ui/skeleton";
 
+// Defines the User interface for authenticated user data.
 interface User {
   id: number;
   navn: string;
 }
 
+// Exports the DepositPage component wrapped in a Suspense fallback.
 export default function DepositPage() {
   return (
     <Suspense fallback={<LoadingSkeleton />}>
@@ -33,6 +43,9 @@ export default function DepositPage() {
   );
 }
 
+// Defines the main content for the deposit page.
+// Manages account number and deposit amount states, checks authentication,
+// and handles deposit form submission.
 function DepositContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -42,6 +55,7 @@ function DepositContent() {
   const [user, setUser] = useState<User | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // Reads the account number from the URL search parameters.
   useEffect(() => {
     const kontonummer = searchParams.get("kontonummer");
     if (kontonummer) {
@@ -49,6 +63,8 @@ function DepositContent() {
     }
   }, [searchParams, user]);
 
+  // Checks user authentication by fetching current user data.
+  // Redirects to the login page if the user is not authenticated.
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -75,6 +91,8 @@ function DepositContent() {
     checkAuth();
   }, [router]);
 
+  // Handles form submission to perform a deposit transaction.
+  // Sends a POST request with account number and deposit amount, then displays a toast based on the response.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -113,10 +131,11 @@ function DepositContent() {
     }
   };
 
+  // Renders the deposit form, a back link, and necessary input fields for account number and amount.
   return (
     <div className="flex mt-52 items-center justify-center">
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
       >
         <IoArrowBackOutline className="text-white text-2xl" />
@@ -168,13 +187,14 @@ function DepositContent() {
       </Card>
     </div>
   );
-};
+}
 
+// Defines a loading skeleton to display while the deposit content is loading.
 function LoadingSkeleton() {
   return (
     <div className="flex mt-52 items-center justify-center">
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
       >
         <IoArrowBackOutline className="text-white text-2xl" />

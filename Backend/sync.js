@@ -1,6 +1,8 @@
+// Imports the sequelize config from 'config/database', this contains the connection details for the database.
 const sequelize = require("./config/database");
-const { index } = require("./models/index");
 
+// Makes the 'syncDatabase' function to sync the database with Sequelize. The force option is set to false,
+// which means that the existing tables in the database will not be dropped before they are recreated.
 const syncDatabase = async () => {
   try {
     console.log("Syncing databases...");
@@ -11,4 +13,5 @@ const syncDatabase = async () => {
   }
 };
 
+// Exports the 'syncDatabase' function so that it can be used in 'server.js'.
 module.exports = syncDatabase;

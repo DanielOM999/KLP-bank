@@ -1,35 +1,51 @@
 "use client";
 
+// Importing core React hooks for state management and ref handling
 import { useState, useRef } from "react";
+
+// Importing Next.js navigation component for client-side transitions
 import Link from "next/link";
+
+// Importing icons for menu toggle functionality
 import { Menu, X } from "lucide-react";
+
+// Importing animation components from Framer Motion for smooth transitions
 import { motion, AnimatePresence } from "framer-motion";
+
+// Importing banking icon from React Icons library
 import { RiBankLine } from "react-icons/ri";
 
+// Main header component with responsive navigation
 export default function Header() {
+  // State management for mobile menu visibility
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // Ref for accessing mobile menu DOM element
   const menuRef = useRef<HTMLDivElement>(null);
 
   return (
+    // Sticky header with blur effect and border
     <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-top/25 backdrop-blur-md">
       <nav className="flex flex-row justify-between mx-10 my-4">
+        {/* Branding section with animated logo */}
         <Link
           href="/"
           className="group flex items-center gap-3 text-2xl font-semibold"
         >
+          {/* Animated logo container with hover effect */}
           <motion.div
             whileHover={{ rotate: [-10, 10, -10] }}
             transition={{ duration: 0.5 }}
           >
             <RiBankLine className="h-10 w-10 rotate-[-10deg] text-white transition-transform group-hover:scale-110" />
           </motion.div>
-          <span className="text-white text-3xl">
-            KLP Bank
-          </span>
+          <span className="text-white text-3xl">KLP Bank</span>
         </Link>
+
+        {/* Navigation links and mobile menu */}
         <div className="flex-col text-3xl">
           <div className="lg:flex">
             <div className="flex gap-6">
+              {/* Desktop navigation links (hidden on mobile) */}
               <div className="hidden items-center gap-8 lg:flex">
                 {["Home", "Register", "Login"].map((item) => (
                   <Link
@@ -38,10 +54,13 @@ export default function Header() {
                     className="relative text-lg font-medium text-gray-300 transition-all hover:text-emerald-400"
                   >
                     {item}
+                    {/* Animated underline effect on hover */}
                     <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-emerald-400 transition-all duration-300 hover:w-full" />
                   </Link>
                 ))}
               </div>
+
+              {/* Mobile menu toggle button */}
               <div>
                 <motion.button
                   className="p-2 rounded-lg hover:bg-gray-700/30 transition-colors"
@@ -56,6 +75,7 @@ export default function Header() {
                   )}
                 </motion.button>
 
+                {/* Animated mobile menu dropdown */}
                 <AnimatePresence>
                   {isMenuOpen && (
                     <motion.div
@@ -95,6 +115,7 @@ export default function Header() {
                             >
                               {item}
                             </Link>
+                            {/* Separator between menu items */}
                             {index < 5 && (
                               <div className="mx-4 my-1 h-px bg-gray-700/50" />
                             )}

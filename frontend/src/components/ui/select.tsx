@@ -1,14 +1,26 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown } from "lucide-react"
-import { cn } from "@/src/lib/utils"
+// Imports the entire 'react' module to access utilities such as 'forwardRef' for creating components that forward refs.
+import * as React from "react";
 
-const Select = SelectPrimitive.Root
-const SelectGroup = SelectPrimitive.Group
-const SelectValue = SelectPrimitive.Value
+// Imports all exports from '@radix-ui/react-select' to utilize Radix UI's accessible select primitives.
+// These primitives serve as the building blocks for creating a custom select component.
+import * as SelectPrimitive from "@radix-ui/react-select";
 
+// Imports the 'Check' and 'ChevronDown' icons from 'lucide-react'.
+// 'Check' is used as an indicator for selected items, while 'ChevronDown' is used as the dropdown icon.
+import { Check, ChevronDown } from "lucide-react";
+
+// Imports the 'cn' function from '@/src/lib/utils' to merge and conditionally apply class names.
+import { cn } from "@/src/lib/utils";
+
+// Exposes Radix UI's Select primitives for easy access in other components.
+const Select = SelectPrimitive.Root;
+const SelectGroup = SelectPrimitive.Group;
+const SelectValue = SelectPrimitive.Value;
+
+// Defines the 'SelectTrigger' component which acts as the interactive element to open the select dropdown.
+// It forwards its ref to the underlying Radix UI 'Trigger' component, applies default styling, and includes a dropdown icon.
 const SelectTrigger = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
@@ -26,9 +38,11 @@ const SelectTrigger = React.forwardRef<
       <ChevronDown className="h-4 w-4 opacity-50" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
-))
-SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
+));
+SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
+// Defines the 'SelectContent' component which renders the dropdown content in a portal.
+// It forwards its ref to Radix UI's 'Content' component and applies styling for animations, positioning, and theming.
 const SelectContent = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
@@ -56,17 +70,25 @@ const SelectContent = React.forwardRef<
       </SelectPrimitive.Viewport>
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
-))
-SelectContent.displayName = SelectPrimitive.Content.displayName
+));
+SelectContent.displayName = SelectPrimitive.Content.displayName;
 
+// Defines the 'SelectLabel' component to render a label within the select dropdown.
+// It forwards its ref to the Radix UI 'Label' component and applies custom styling.
 const SelectLabel = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
 >(({ className, ...props }, ref) => (
-  <SelectPrimitive.Label ref={ref} className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)} {...props} />
-))
-SelectLabel.displayName = SelectPrimitive.Label.displayName
+  <SelectPrimitive.Label
+    ref={ref}
+    className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
+    {...props}
+  />
+));
+SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
+// Defines the 'SelectItem' component representing an individual option within the select dropdown.
+// It forwards its ref to the Radix UI 'Item' component, applies styling, and includes an indicator for the selected item.
 const SelectItem = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
@@ -86,17 +108,24 @@ const SelectItem = React.forwardRef<
     </span>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
-))
-SelectItem.displayName = SelectPrimitive.Item.displayName
+));
+SelectItem.displayName = SelectPrimitive.Item.displayName;
 
+// Defines the 'SelectSeparator' component to visually separate groups of options within the dropdown.
+// It forwards its ref to the Radix UI 'Separator' component and applies styling for spacing and color.
 const SelectSeparator = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
 >(({ className, ...props }, ref) => (
-  <SelectPrimitive.Separator ref={ref} className={cn("-mx-1 my-1 h-px bg-muted", className)} {...props} />
-))
-SelectSeparator.displayName = SelectPrimitive.Separator.displayName
+  <SelectPrimitive.Separator
+    ref={ref}
+    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    {...props}
+  />
+));
+SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
+// Exports all select components and primitives for use in other parts of the application.
 export {
   Select,
   SelectGroup,
@@ -105,5 +134,5 @@ export {
   SelectContent,
   SelectLabel,
   SelectItem,
-  SelectSeparator
-}
+  SelectSeparator,
+};

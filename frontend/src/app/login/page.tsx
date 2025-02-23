@@ -1,26 +1,44 @@
-"use client"
+"use client";
 
-import type React from "react"
+// Imports type definitions from React.
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { Input } from "@/src/components/ui/input"
-import { Button } from "@/src/components/ui/button"
-import { Label } from "@/src/components/ui/label"
-import { useToast } from "@/src/components/ui/use-toast"
+// Imports state hook from React and Next.js router for navigation.
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
+// Imports Next.js Link for navigation.
+import Link from "next/link";
+
+// Imports UI components for Card layout, form inputs, buttons, and labels.
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
+import { Input } from "@/src/components/ui/input";
+import { Button } from "@/src/components/ui/button";
+import { Label } from "@/src/components/ui/label";
+
+// Imports the custom toast hook to display notifications.
+import { useToast } from "@/src/components/ui/use-toast";
+
+// Defines the Login component which handles user login.
 export default function Login() {
-  const [navn, setNavn] = useState("")
-  const [passord, setPassord] = useState("")
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const { toast } = useToast()
+  const [navn, setNavn] = useState("");
+  const [passord, setPassord] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
 
+  // Handles form submission by sending a login request to the API.
+  // On success, navigates to the home page; on failure, displays an error toast.
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
 
     try {
       const res = await fetch("http://localhost:5000/api/users/login", {
@@ -30,37 +48,41 @@ export default function Login() {
         },
         credentials: "include",
         body: JSON.stringify({ navn, passord }),
-      })
+      });
 
-      const data = await res.json()
+      const data = await res.json();
       if (res.ok) {
-        router.push("/")
+        router.push("/");
       } else {
         toast({
           variant: "destructive",
           title: "Error",
           description: data.error || "Registration failed",
-        })
-        setLoading(false)
+        });
+        setLoading(false);
       }
     } catch {
       toast({
         variant: "destructive",
         title: "Error",
         description: "Invalid username or password",
-      })
-      setLoading(false)
+      });
+      setLoading(false);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
+  // Renders the login form within a Card layout, including inputs for username and password,
+  // a submit button, and a link to the registration page.
   return (
     <div className="flex mt-52 items-center justify-center">
       <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border border-gray-700">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-white">Login</CardTitle>
-          <CardDescription className="text-gray-300">Enter your credentials to access your account</CardDescription>
+          <CardDescription className="text-gray-300">
+            Enter your credentials to access your account
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -90,7 +112,11 @@ export default function Login() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-colors" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+              disabled={loading}
+            >
               {loading ? "Logging in..." : "Login"}
             </Button>
             <p className="text-sm text-center text-gray-400">
@@ -103,5 +129,5 @@ export default function Login() {
         </form>
       </Card>
     </div>
-  )
+  );
 }

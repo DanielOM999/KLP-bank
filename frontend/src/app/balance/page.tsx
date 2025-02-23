@@ -1,12 +1,20 @@
 "use client";
 
+// Imports type definitions from React for component props.
 import type React from "react";
 
+// Imports Suspense for lazy loading fallback, and hooks for state, effects, and routing.
 import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+// Imports the back arrow icon from react-icons.
 import { IoArrowBackOutline } from "react-icons/io5";
+
+// Imports Next.js Link for navigation.
 import Link from "next/link";
+
+// Imports UI components for Card layout, form inputs, buttons, and labels.
 import {
   Card,
   CardContent,
@@ -17,14 +25,20 @@ import {
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
 import { Label } from "@/src/components/ui/label";
+
+// Imports the custom toast hook to display notifications.
 import { useToast } from "@/src/components/ui/use-toast";
+
+// Imports a Skeleton component to show a loading state.
 import { Skeleton } from "@/src/components/ui/skeleton";
 
+// Defines the User interface to type the logged-in user data.
 interface User {
   id: number;
   navn: string;
 }
 
+// Exports the BalancePage component which wraps its content in a Suspense fallback.
 export default function BalancePage() {
   return (
     <Suspense fallback={<LoadingSkeleton />}>
@@ -33,6 +47,9 @@ export default function BalancePage() {
   );
 }
 
+// Defines the main content for the BalancePage.
+// Handles fetching authentication, reading search params for the account number,
+// fetching the account balance, and displaying the result.
 function BalanceContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -42,6 +59,7 @@ function BalanceContent() {
   const [user, setUser] = useState<User | null>(null);
   const [checking, setChecking] = useState(false);
 
+  // Sets the account number from the URL search parameters.
   useEffect(() => {
     const kontonummer = searchParams.get("kontonummer");
     if (kontonummer) {
@@ -49,6 +67,8 @@ function BalanceContent() {
     }
   }, [searchParams, user]);
 
+  // Checks user authentication by fetching current user data.
+  // Redirects to login if not authenticated.
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -75,6 +95,8 @@ function BalanceContent() {
     checkAuth();
   }, [router]);
 
+  // Handles form submission to fetch and display the account balance.
+  // Displays errors using the toast notification if the API call fails.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setChecking(true);
@@ -113,10 +135,11 @@ function BalanceContent() {
     }
   };
 
+  // Renders the balance check form, a back link, and the balance result if available.
   return (
     <div className="flex mt-52 items-center justify-center">
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
       >
         <IoArrowBackOutline className="text-white text-2xl" />
@@ -165,13 +188,14 @@ function BalanceContent() {
       </Card>
     </div>
   );
-};
+}
 
+// Defines a loading skeleton to display while the main content is being fetched.
 function LoadingSkeleton() {
   return (
     <div className="flex mt-52 items-center justify-center">
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="absolute left-4 top-24 p-2 hover:bg-gray-700/50 rounded-full transition-colors"
       >
         <IoArrowBackOutline className="text-white text-2xl" />
