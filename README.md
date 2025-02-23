@@ -19,6 +19,8 @@ A modern banking system prototype created for KLP's IT Developer Apprentice posi
 ### Requirements
 1. [Node.js](https://nodejs.org/) (v18+)
 2. npm (comes with Node.js)
+3. [PostgreSQL](https://www.postgresql.org/) (Version 10.0.22631.4890)
+4. (Optional) pgAdmin 4
 
 ### Installation
 ```bash
@@ -37,6 +39,16 @@ npm i
 
 # Start development server
 npm run start
+```
+After installing, you also need to create a .env file in the backend folder. In the backend directory, create a file named .env with the following properties:
+
+```env
+SERVER_HOST=localhost
+SERVER_PASSWORD= # your password
+SERVER_DATABASE= # your database name
+SERVER_LOGIN= # account to access the database in PostgreSQL
+SERVER_PORT= # the port - default is 5432
+SECRETKEY= # the secret key you want
 ```
 
 ## 📄 License
