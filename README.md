@@ -1,5 +1,5 @@
 # 🏦 KLP Digital Bank - Interview Project
-
+![Heatmap Example](photo_of_home_page.png)
 ## 📝 Overview
 A modern banking system prototype created for KLP's IT Developer Apprentice position. This web application allows users to:
 - Create secure bank accounts
