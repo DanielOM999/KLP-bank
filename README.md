@@ -54,4 +54,6 @@ SECRETKEY= # the secret key you want
 ## 📄 License
 [![MIT Logo](https://upload.wikimedia.org/wikipedia/commons/0/0c/MIT_logo.svg "MIT Logo")](https://choosealicense.com/licenses/mit/)
 ---
-*This project was created as part of KLP's IT Developer Apprentice recruitment process.*
+*This project was created as part of KLP's IT Developer Apprentice recruitment process. Here is also a tekst i wrote to summerize my thought process, in norwegian*
+---
+[Opsumering av mine tanker under case oppgaven til KLP](Opsumering_av_mine_tanker_under_case_oppgaven_til_KLP.pdf)
